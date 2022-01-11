@@ -17,7 +17,7 @@ class Sistema():
     def criar_parada(self, parada):
         self.paradas.append(parada)
 
-    def mostrar_motoristas(self):
+    def listar_motoristas(self):
         print("+" + "-"*26 + "+" + "-"*12 + "+" + "-"*22 + "+")
         print("|" + "Nome".center(25) + " | " +"Idade".center(10) + " | " + "Ônibus que dirige".center(20) + " |")
         print("+" +  "-"*26 + "+" + "-"*12 + "+" + "-"*22 + "+")
@@ -25,7 +25,7 @@ class Sistema():
             print("|" + str(motorista))
             print("+" + "-"*26 + "+" + "-"*12 + "+" + "-"*22 + "+")
 
-    def mostrar_fiscais(self):
+    def listar_fiscais(self):
         print("+" + "-"*26 + "+" + "-"*12 + "+" + "-"*22 + "+")
         print("|" + "Nome".center(25) + " | " +"Idade".center(10) + " | " + "Ônibus que fiscaliza".center(20) + " |")
         print("+" + "-"*26 + "+" + "-"*12 + "+" + "-"*22 + "+")
@@ -33,7 +33,7 @@ class Sistema():
             print("|" + str(fiscal))
             print("+" + "-"*26 + "+" + "-"*12 + "+" + "-"*22 + "+")
     
-    def mostrar_onibus(self):
+    def listar_onibus(self):
         print("+" + "-"*11 + "+" + "-"*27 + "+" + "-"*27 + "+" + "-"*22 + "+" + "-"*12 + "+")
         print("|" + "Código".center(10) + " | " +"Motorista".center(25) + " | " + "Fiscal".center(25) + " | "
         + "Paradas".center(20) + " | " + "Passagem".center(10) + " |")
@@ -42,7 +42,7 @@ class Sistema():
             print("|" + str(onibus))
             print("+" + "-"*11 + "+" + "-"*27 + "+" + "-"*27 + "+" + "-"*22 + "+" + "-"*12 + "+")
     
-    def mostrar_paradas(self):
+    def listar_paradas(self):
         print("+" + "-"*11 + "+" + "-"*52 + "+")
         print("|" + "Código".center(10) + " | " +"Endereço".center(50) + " |")
         print("+" + "-"*11 + "+" + "-"*52 + "+")
@@ -50,7 +50,7 @@ class Sistema():
             print("|" + str(parada))
             print("+" + "-"*11 + "+" + "-"*52 + "+")
 
-    def mostrar_rotas(self):
+    def listar_rotas(self):
         for onibus in self.onibus:
             print("Rota do Ônibus: " + str(onibus.codigo))
             for p in onibus.paradas:
@@ -81,7 +81,7 @@ class Sistema():
             i_onibus += 1
         self.paradas.pop(indice)
 
-    def assignar_fiscal_onibus(self, i_fiscal, i_onibus):
+    def atribuir_fiscal_onibus(self, i_fiscal, i_onibus):
         #Um teste deve ser realizado para desfazer o último vínculo entre fiscais e ônibus
         fiscal = self.fiscais[i_fiscal]
         onibus = self.onibus[i_onibus]
@@ -91,8 +91,8 @@ class Sistema():
         if(onibus.fiscal != None):
             antigo_fiscal = onibus.fiscal
             antigo_fiscal.onibus = None
-        onibus.assignar_fiscal(fiscal)
-        fiscal.assignar_onibus(onibus)
+        onibus.fiscal = fiscal
+        fiscal.onibus = onibus
 
     def adicionar_parada_onibus(self, i_parada, i_onibus):
         cod_parada = self.paradas[i_parada].codigo

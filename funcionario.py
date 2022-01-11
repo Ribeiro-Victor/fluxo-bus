@@ -9,6 +9,4 @@ class Funcionario:
         f"{str(self.idade).center(10)}" + " | "
         f"{'N/A'.center(20) if self.onibus == None else str(self.onibus.codigo).center(20)}" + " | ")
 
-    def assignar_onibus(self, codigo):
-        self.onibus = codigo
 
