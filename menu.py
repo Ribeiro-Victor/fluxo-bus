@@ -42,7 +42,7 @@ textos_menu = [
         'Alterar Idade do Motorista',
         'Alterar Código do Ônibus',
         'Alterar Rota do Ônibus',
-        'Alterar Preço da Passagem do Ônibus',
+        'Alterar Multiplicador de preço da Passagem do Ônibus',
         'Alterar Código da Parada',
         'Alterar Endereço da Parada'],
         ['Voltar ao Menu Principal',
@@ -60,9 +60,9 @@ sistema.criar_fiscal(Funcionario('Fiscal A', 21))
 sistema.criar_fiscal(Funcionario('Fiscal B', 30))
 sistema.criar_fiscal(Funcionario('Fiscal C', 44))
 
-sistema.criar_onibus(Onibus(551))
-sistema.criar_onibus(Onibus(355))
-sistema.criar_onibus(Onibus(721))
+sistema.criar_onibus(Onibus('551'))
+sistema.criar_onibus(Onibus('355'))
+sistema.criar_onibus(Onibus('721'))
 
 sistema.criar_parada(Parada(12, "Av. Vicente de Carvalho, 1483"))
 sistema.criar_parada(Parada(22, "Av. Meriti, 999"))
@@ -155,19 +155,28 @@ while(menu_atual!= -1):
         
         elif(escolha == 3):
             motoristas_livres = []
+            codigos_utilizados = []
             i = 0
             for motorista in sistema.motoristas:
                 if motorista.onibus == None:
                     motoristas_livres.append(i)
                 i += 1
+            for onibus in sistema.onibus:
+                codigos_utilizados.append(str(onibus.codigo))
+            
             if(len(motoristas_livres) == 0):
                 print("Não há motoristas disponíveis! Você deve criar um primeiro.")
             else:
-                codigo = input("Digite o código do Ônibus: ")
-                i = 0
+                while(True):
+                    codigo = input("Digite o código do Ônibus: ")
+                    if not codigo in codigos_utilizados:
+                        break
+                    else:
+                        print("Este código já esta em uso!")
+                j = 0
                 for j in motoristas_livres:
-                    print(i, " - ", sistema.motoristas[j].nome)
-                    i += 1
+                    print(j, " - ", sistema.motoristas[j].nome)
+                    j += 1
                 while(True):
                     id = input("Escolha o ID do motorista: ")
                     if id.isdigit():
@@ -239,21 +248,76 @@ while(menu_atual!= -1):
             sistema.fiscais[i_fiscal].nome = nome[0:25]
         
         if(escolha == 2):
-            pass
+            i_fiscal = escolher_objeto(sistema.fiscais)
+            while(True):
+                idade = input("Digite a nova idade do fiscal: ")
+                if idade.isdigit():
+                    idade = int(idade)
+                    break
+                else:
+                    print("Valor inválido!")
+            sistema.fiscais[i_fiscal].idade = idade
+        
         if(escolha == 3):
-            pass
+            i_motorista = escolher_objeto(sistema.motoristas)
+            nome = input("Digite o novo nome do motorista: ")
+            sistema.motoristas[i_motorista].nome = nome[0:25]
+
         if(escolha == 4):
-            pass
+            i_motorista = escolher_objeto(sistema.motoristas)
+            while(True):
+                idade = input("Digite a nova idade do motorista: ")
+                if idade.isdigit():
+                    idade = int(idade)
+                    break
+                else:
+                    print("Valor inválido!")
+            sistema.motoristas[i_motorista].idade = idade
+        
         if(escolha == 5):
-            pass
+            i_onibus = escolher_objeto(sistema.onibus)
+            codigos_utilizados = []
+            for onibus in sistema.onibus:
+                codigos_utilizados.append(str(onibus.codigo))
+            while(True):
+                codigo = input("Digite o novo código do Ônibus: ")
+                if not codigo in codigos_utilizados:
+                    break
+                else:
+                    print("Este código já esta em uso!")
+            sistema.onibus[i_onibus].codigo = str(codigo)
+            
         if(escolha == 6):
             pass
         if(escolha == 7):
-            pass
+            i_onibus = escolher_objeto(sistema.onibus)
+            while(True):
+                try:
+                    mult_passagem = input("Digite o novo multiplicador da passagem: ")
+                    mult_passagem = float(mult_passagem)
+                    break
+                except ValueError:
+                    print("Valor inválido! Deve ser um número real.")
+            sistema.onibus[i_onibus].multiplicador_passagem = mult_passagem
+            sistema.onibus[i_onibus].atualiza_passagem()
+
         if(escolha == 8):
-            pass
+            i_parada = escolher_objeto(sistema.paradas)
+            codigos_utilizados = []
+            for parada in sistema.paradas:
+                codigos_utilizados.append(str(parada.codigo))
+            while(True):
+                codigo = input("Digite o novo código da Parada: ")
+                if not codigo in codigos_utilizados:
+                    break
+                else:
+                    print("Este código já esta em uso!")
+            sistema.paradas[i_parada].codigo = str(codigo)
+    
         if(escolha == 9):
-            pass
+            i_parada = escolher_objeto(sistema.paradas)
+            endereco = input("Digite o novo endereço da parada: ")
+            sistema.paradas[i_parada].endereco = endereco[0:50]
 
     elif(menu_atual == MENU_EXCLUSAO):
 

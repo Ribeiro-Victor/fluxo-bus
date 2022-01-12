@@ -6,6 +6,7 @@ class Onibus:
         self.fiscal = None
         self.paradas = []
         self.passagem = 0.0
+        self.multiplicador_passagem = 0.5
 
     def __repr__(self):
         return (f"{str(self.codigo).center(10)}" + " | "
@@ -15,6 +16,6 @@ class Onibus:
         f"  R$ {self.passagem:.2f}" + "  |")
 
     def atualiza_passagem(self):
-        self.passagem = 0.5 * len(self.paradas)
+        self.passagem = self.multiplicador_passagem * len(self.paradas)
         
 
