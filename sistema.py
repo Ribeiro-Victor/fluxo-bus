@@ -53,11 +53,14 @@ class Sistema():
     def listar_rotas(self):
         for onibus in self.onibus:
             print("Rota do Ônibus: " + str(onibus.codigo))
-            for p in onibus.paradas:
-                for parada in self.paradas:
-                    if parada.codigo == p:
-                        print(parada.endereco)
-            print("")
+            if(len(onibus.paradas)>0):
+                for p in onibus.paradas:
+                    for parada in self.paradas:
+                        if parada.codigo == p:
+                            print(parada.endereco)
+                print("")
+            else:
+                print("N/A")
         
     
     def deletar_onibus(self, indice):
@@ -71,6 +74,11 @@ class Sistema():
         removido = self.fiscais.pop(indice)
         if(removido.onibus != None):
             removido.onibus.fiscal = None
+
+    def deletar_motorista(self, indice):
+        removido = self.motoristas.pop(indice)
+        if(removido.onibus != None):
+            removido.onibus.motorista = None
 
     def deletar_parada(self, indice):
         cod_parada = self.paradas[indice].codigo
@@ -93,6 +101,19 @@ class Sistema():
             antigo_fiscal.onibus = None
         onibus.fiscal = fiscal
         fiscal.onibus = onibus
+    
+    def atribuir_motorista_onibus(self, i_motorista, i_onibus):
+        #Um teste deve ser realizado para desfazer o último vínculo entre motoristas e ônibus
+        motorista = self.motoristas[i_motorista]
+        onibus = self.onibus[i_onibus]
+        if(motorista.onibus != None):
+            antigo_onibus = motorista.onibus
+            antigo_onibus.motorista = None
+        if(onibus.motorista != None):
+            antigo_motorista = onibus.motorista
+            antigo_motorista.onibus = None
+        onibus.motorista = motorista
+        motorista.onibus = onibus
 
     def adicionar_parada_onibus(self, i_parada, i_onibus):
         cod_parada = self.paradas[i_parada].codigo

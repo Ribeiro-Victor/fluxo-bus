@@ -60,9 +60,9 @@ sistema.criar_fiscal(Funcionario('Fiscal A', 21))
 sistema.criar_fiscal(Funcionario('Fiscal B', 30))
 sistema.criar_fiscal(Funcionario('Fiscal C', 44))
 
-sistema.criar_onibus(Onibus(551, sistema.motoristas[0]))
-sistema.criar_onibus(Onibus(355, sistema.motoristas[1]))
-sistema.criar_onibus(Onibus(721, sistema.motoristas[2]))
+sistema.criar_onibus(Onibus(551))
+sistema.criar_onibus(Onibus(355))
+sistema.criar_onibus(Onibus(721))
 
 sistema.criar_parada(Parada(12, "Av. Vicente de Carvalho, 1483"))
 sistema.criar_parada(Parada(22, "Av. Meriti, 999"))
@@ -96,11 +96,11 @@ def escolher_objeto(lista):
             print(i, " - ", objeto.endereco)
         i += 1
     if isinstance(objeto, Funcionario):
-        tipo_objeto = "do Funcionário:"
+        tipo_objeto = "do Funcionário: "
     elif isinstance(objeto, Onibus):
-        tipo_objeto = "do Ônibus:"
+        tipo_objeto = "do Ônibus: "
     elif isinstance(objeto, Parada):
-        tipo_objeto = "da Parada:"
+        tipo_objeto = "da Parada: "
     while(True):
         op = input("Escolha o ID " + tipo_objeto)
         if op.isdigit():
@@ -112,14 +112,8 @@ def escolher_objeto(lista):
         else:
             print("Opção inválida!")
 
-for i in [0,1,2,3,4,5]:
-    print("-"*50)
-    j = 0
-    for texto in textos_menu[i]:
-        #print(j, " - ", texto)
-        j += 1
-
 menu_atual = MENU_PRINCIPAL
+
 while(menu_atual!= -1):
     escolha = escolher_acao(menu_atual, len(textos_menu[menu_atual])-1)
 
@@ -136,7 +130,65 @@ while(menu_atual!= -1):
             menu_atual = MENU_PRINCIPAL
         
         elif(escolha == 1):
-            print("x")
+            nome = input("Digite o nome do fiscal: ")
+            while(True):
+                idade = input("Digite a idade do fiscal: ")
+                if idade.isdigit():
+                    idade = int(idade)
+                    break
+                else:
+                    print("Valor inválido!")
+            sistema.criar_fiscal(Funcionario(nome, idade))
+            print("Fiscal criado!")
+        
+        elif(escolha == 2):
+            nome = input("Digite o nome do motorista: ")
+            while(True):
+                idade = input("Digite a idade do motorista: ")
+                if idade.isdigit():
+                    idade = int(idade)
+                    break
+                else:
+                    print("Valor inválido!")
+            sistema.criar_motorista(Funcionario(nome, idade))
+            print("Motorista criado!")
+        
+        elif(escolha == 3):
+            motoristas_livres = []
+            i = 0
+            for motorista in sistema.motoristas:
+                if motorista.onibus == None:
+                    motoristas_livres.append(i)
+                i += 1
+            if(len(motoristas_livres) == 0):
+                print("Não há motoristas disponíveis! Você deve criar um primeiro.")
+            else:
+                codigo = input("Digite o código do Ônibus: ")
+                i = 0
+                for j in motoristas_livres:
+                    print(i, " - ", sistema.motoristas[j].nome)
+                    i += 1
+                while(True):
+                    id = input("Escolha o ID do motorista: ")
+                    if id.isdigit():
+                        id = int(id)
+                        if(id > len(motoristas_livres)-1):
+                            print("ID inválido!")
+                        else:
+                            break
+                    else:
+                        print("ID inválido!")
+                i_motorista = motoristas_livres[id]
+                sistema.criar_onibus(Onibus(codigo))
+                i_onibus = len(sistema.onibus)-1
+                sistema.atribuir_motorista_onibus(i_motorista, i_onibus)
+        
+        elif(escolha == 4):
+            codigo = input("Digite o código da parada: ")
+            endereco = input("Digite o endereço da parada: ")
+            sistema.criar_parada(Parada(codigo, endereco))
+            print("Parada criada!")
+
 
     elif(menu_atual == MENU_LISTAR):
         if(escolha == 0):
@@ -161,18 +213,47 @@ while(menu_atual!= -1):
             i_fiscal = escolher_objeto(sistema.fiscais)
             i_onibus = escolher_objeto(sistema.onibus)
             sistema.atribuir_fiscal_onibus(i_fiscal, i_onibus)
+            print("Atribuição realizada!")
 
         if(escolha == 2):
-            pass
+            i_motorista = escolher_objeto(sistema.motoristas)
+            i_onibus = escolher_objeto(sistema.onibus)
+            sistema.atribuir_motorista_onibus(i_motorista, i_onibus)
+            print("Atribuição realizada!")
 
         if(escolha == 3):
             i_fiscal = escolher_objeto(sistema.paradas)
             i_onibus = escolher_objeto(sistema.onibus)
             sistema.adicionar_parada_onibus(i_fiscal, i_onibus)
+            print("Atribuição realizada!")
 
 
     elif(menu_atual == MENU_ALTERACAO):
-        print("L")
+        
+        if(escolha == 0):
+            menu_atual = MENU_PRINCIPAL
+        
+        if(escolha == 1):
+            i_fiscal = escolher_objeto(sistema.fiscais)
+            nome = input("Digite o novo nome do fiscal: ")
+            sistema.fiscais[i_fiscal].nome = nome[0:25]
+        
+        if(escolha == 2):
+            pass
+        if(escolha == 3):
+            pass
+        if(escolha == 4):
+            pass
+        if(escolha == 5):
+            pass
+        if(escolha == 6):
+            pass
+        if(escolha == 7):
+            pass
+        if(escolha == 8):
+            pass
+        if(escolha == 9):
+            pass
 
     elif(menu_atual == MENU_EXCLUSAO):
 
@@ -183,16 +264,23 @@ while(menu_atual!= -1):
             if len(sistema.fiscais) > 0:
                 i_fiscal = escolher_objeto(sistema.fiscais)
                 sistema.deletar_fiscal(i_fiscal)
+                print("Fiscal deletado!")
             else:
                 print("Erro: Sistema não possui fiscais.")
 
         if(escolha == 2):
-            pass
+            if len(sistema.motoristas) > 0:
+                i_motorista = escolher_objeto(sistema.motoristas)
+                sistema.deletar_motorista(i_motorista)
+                print("Motorista deletado!")
+            else:
+                print("Erro: Sistema não possui motoristas.")
 
         if(escolha == 3):
             if len(sistema.onibus) > 0:
                 i_onibus = escolher_objeto(sistema.onibus)
                 sistema.deletar_onibus(i_onibus)
+                print("Ônibus deletado!")
             else:
                 print("Erro: Sistema não possui ônibus.")
         
@@ -200,25 +288,6 @@ while(menu_atual!= -1):
             if len(sistema.paradas) > 0:
                 i_parada = escolher_objeto(sistema.paradas)
                 sistema.deletar_parada(i_parada)
+                print("Parada deletada!")
             else:
                 print("Erro: Sistema não possui paradas.")
-            
-
-
-
-
-        
-
-
-
-
-
-# sistema.adicionar_parada_onibus(0, 0)
-# sistema.adicionar_parada_onibus(1, 0)
-
-# sistema.mostrar_fiscais()
-# sistema.mostrar_onibus()
-# sistema.atribuir_fiscal_onibus(0, 0)
-# sistema.mostrar_fiscais()
-# sistema.mostrar_onibus()
-
