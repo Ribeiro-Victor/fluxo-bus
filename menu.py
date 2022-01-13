@@ -2,8 +2,10 @@ from onibus import Onibus
 from funcionario import Funcionario
 from sistema import Sistema
 from parada import Parada
+from dados_teste import criar_dados_teste
 
 sistema = Sistema()
+sistema = criar_dados_teste()
 
 # Números dos menus
 MENU_PRINCIPAL = 0
@@ -51,22 +53,6 @@ textos_menu = [
         'Excluir Ônibus',
         'Excluir Parada'],
         ]
-
-sistema.criar_motorista(Funcionario('Motorista 1' , 48))
-sistema.criar_motorista(Funcionario('Motorista 2', 55))
-sistema.criar_motorista(Funcionario('Motorista 3', 25))
-
-sistema.criar_fiscal(Funcionario('Fiscal A', 21))
-sistema.criar_fiscal(Funcionario('Fiscal B', 30))
-sistema.criar_fiscal(Funcionario('Fiscal C', 44))
-
-sistema.criar_onibus(Onibus('551'))
-sistema.criar_onibus(Onibus('355'))
-sistema.criar_onibus(Onibus('721'))
-
-sistema.criar_parada(Parada(12, "Av. Vicente de Carvalho, 1483"))
-sistema.criar_parada(Parada(22, "Av. Meriti, 999"))
-sistema.criar_parada(Parada(33, "Rua Pascal, 131"))
 
 def escolher_acao(i_menu, limite):
     print("-"*25 + "MENU" + "-"*25)
@@ -173,10 +159,10 @@ while(menu_atual!= -1):
                         break
                     else:
                         print("Este código já esta em uso!")
-                j = 0
+                i = 0
                 for j in motoristas_livres:
-                    print(j, " - ", sistema.motoristas[j].nome)
-                    j += 1
+                    print(i, " - ", sistema.motoristas[j].nome)
+                    i += 1
                 while(True):
                     id = input("Escolha o ID do motorista: ")
                     if id.isdigit():
@@ -193,7 +179,16 @@ while(menu_atual!= -1):
                 sistema.atribuir_motorista_onibus(i_motorista, i_onibus)
         
         elif(escolha == 4):
-            codigo = input("Digite o código da parada: ")
+            codigos_utilizados = []
+            for parada in sistema.paradas:
+                codigos_utilizados.append(str(parada.codigo))
+            while(True):
+                codigo = input("Digite o código da parada: ")
+                codigo = str(codigo)
+                if not codigo in codigos_utilizados:
+                    break
+                else:
+                    print("Este código já esta em uso!")
             endereco = input("Digite o endereço da parada: ")
             sistema.criar_parada(Parada(codigo, endereco))
             print("Parada criada!")
@@ -288,7 +283,23 @@ while(menu_atual!= -1):
             sistema.onibus[i_onibus].codigo = str(codigo)
             
         if(escolha == 6):
-            pass
+            i_onibus = escolher_objeto(sistema.onibus)
+            rota_atual = sistema.onibus[i_onibus].paradas
+            nova_rota = []
+            print("Digite os códigos de parada na ordem desejada, um por vez.")
+            while(len(rota_atual)>0):
+                print("Códigos restantes: ", rota_atual)
+                while(True):
+                    codigo = input("Próxima parada: ")
+                    codigo = str(codigo)
+                    if codigo in rota_atual:
+                        nova_rota.append(codigo)
+                        rota_atual.remove(codigo)
+                        break
+                    else:
+                        print("Este código não está na lista restante!")
+            sistema.onibus[i_onibus].paradas = nova_rota    
+            
         if(escolha == 7):
             i_onibus = escolher_objeto(sistema.onibus)
             while(True):
@@ -307,12 +318,17 @@ while(menu_atual!= -1):
             for parada in sistema.paradas:
                 codigos_utilizados.append(str(parada.codigo))
             while(True):
-                codigo = input("Digite o novo código da Parada: ")
-                if not codigo in codigos_utilizados:
+                codigo_novo = input("Digite o novo código da Parada: ")
+                if not codigo_novo in codigos_utilizados:
                     break
                 else:
                     print("Este código já esta em uso!")
-            sistema.paradas[i_parada].codigo = str(codigo)
+            codigo_antigo = sistema.paradas[i_parada].codigo
+            sistema.paradas[i_parada].codigo = str(codigo_novo)
+            for onibus in sistema.onibus:
+                if codigo_antigo in onibus.paradas:
+                    indice = onibus.paradas.index(codigo_antigo)
+                    onibus.paradas[indice] = codigo_novo
     
         if(escolha == 9):
             i_parada = escolher_objeto(sistema.paradas)
